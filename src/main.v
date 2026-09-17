@@ -1,7 +1,7 @@
 module blink (
-    input clk,          // 27 MHz clock
-    input key1,
-    input key2,
+    input  clk,   // 27 MHz clock
+    input  key1,
+    input  key2,
     output led0,
     output led1,
     output led2,
@@ -9,52 +9,58 @@ module blink (
     output led4,
     output led5
 );
-    reg rst = 1;
+  reg rst = 1;
 
-    blinking_led(.clk(clk), .rst(rst), .rst_brightness((256/5) * 0), .led(led0));
-    blinking_led(.clk(clk), .rst(rst), .rst_brightness((256/5) * 1), .led(led1));
-    blinking_led(.clk(clk), .rst(rst), .rst_brightness((256/5) * 2), .led(led2));
-    blinking_led(.clk(clk), .rst(rst), .rst_brightness((256/5) * 3), .led(led3));
-    blinking_led(.clk(clk), .rst(rst), .rst_brightness((256/5) * 4), .led(led4));
-    blinking_led(.clk(clk), .rst(rst), .rst_brightness((256/5) * 5), .led(led5));
-   
-    always @(posedge clk) rst <= 0;
+  blinking_led(
+      .clk(clk), .rst(rst), .rst_brightness((256 / 5) * 0), .led(led0)
+  ); blinking_led(
+      .clk(clk), .rst(rst), .rst_brightness((256 / 5) * 1), .led(led1)
+  ); blinking_led(
+      .clk(clk), .rst(rst), .rst_brightness((256 / 5) * 2), .led(led2)
+  ); blinking_led(
+      .clk(clk), .rst(rst), .rst_brightness((256 / 5) * 3), .led(led3)
+  ); blinking_led(
+      .clk(clk), .rst(rst), .rst_brightness((256 / 5) * 4), .led(led4)
+  ); blinking_led(
+      .clk(clk), .rst(rst), .rst_brightness((256 / 5) * 5), .led(led5)
+  );
+
+  always @(posedge clk) rst <= 0;
 endmodule
 
-module blinking_led(
+module blinking_led (
     input clk,
     input rst,
-    input[7:0] rst_brightness,
+    input [7:0] rst_brightness,
     output led
 );
-    reg[7:0] brightness = 0;
-    led_pwm(.clk(clk), .brightness(brightness), .led(led));
+  reg [7:0] brightness = 0;
+  led_pwm(
+      .clk(clk), .brightness(brightness), .led(led)
+  );
 
-    reg state = 0;
+  reg state = 0;
 
-    localparam speed = 1024;
-    localparam STEP_TICKS = 27_000_000 / speed;
+  localparam speed = 1024;
+  localparam STEP_TICKS = 27_000_000 / speed;
 
-    reg[31:0] counter = 0;
-    always @(posedge clk) begin
-        if (rst) brightness <= rst_brightness;
-        else
-        if (state == 0) begin
-            if (brightness == 255) state <= 1;
-            else if (counter == STEP_TICKS - 1) begin
-                counter <= 0;
-                brightness <= brightness + 1;
-            end else
-                counter <= counter + 1;
-        end else begin
-            if (brightness == 0) state <= 0;
-            else if (counter == STEP_TICKS - 1) begin
-                counter <= 0;
-                brightness <= brightness - 1;
-            end else
-                counter <= counter + 1;
-        end
+  reg [31:0] counter = 0;
+  always @(posedge clk) begin
+    if (rst) brightness <= rst_brightness;
+    else if (state == 0) begin
+      if (brightness == 255) state <= 1;
+      else if (counter == STEP_TICKS - 1) begin
+        counter <= 0;
+        brightness <= brightness + 1;
+      end else counter <= counter + 1;
+    end else begin
+      if (brightness == 0) state <= 0;
+      else if (counter == STEP_TICKS - 1) begin
+        counter <= 0;
+        brightness <= brightness - 1;
+      end else counter <= counter + 1;
     end
+  end
 endmodule
 
 //module blink (
