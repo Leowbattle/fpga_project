@@ -10,7 +10,7 @@ module blink (
     output led5
 );
   reg rst = 1;
-
+// TODO: Gamma correction
   blinking_led(
       .clk(clk), .rst(rst), .rst_brightness((256 / 5) * 0), .led(led0)
   ); blinking_led(
