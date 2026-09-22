@@ -10,9 +10,10 @@ module blink (
     input key1,
     input key2,
 
-    input  uart_rx,
+    input uart_rx,
     output reg uart_tx
 );
+  FIFO #(.SIZE(1)) f (.clk(clk));
 
   assign led0 = ~(state == STATE_IDLE);
   assign led1 = ~(state == STATE_START);
@@ -42,15 +43,15 @@ module blink (
     $display("OVERSAMPLE = %0d", OVERSAMPLE);
     $display("DIVIDER = %0d", DIVIDER);
     $display("BAUD_ACTUAL = %0d", BAUD_ACTUAL);
-    
+
     // $display("Error = %f", (BAUD_ACTUAL - real'(UART_BAUD)) / UART_BAUD * 100.0);
   end
 
-  reg[1:0] state = STATE_IDLE;
-  reg[2:0] data_counter;
-  reg[7:0] data;
-  
-  reg[31:0] clk_counter = 0;
+  reg [ 1:0] state = STATE_IDLE;
+  reg [ 2:0] data_counter;
+  reg [ 7:0] data;
+
+  reg [31:0] clk_counter = 0;
 
   always @(posedge clk) begin
     if (state == STATE_IDLE && key1) begin
@@ -76,10 +77,9 @@ module blink (
         end
         STATE_STOP: begin
           uart_tx <= 1;
-          state <= STATE_IDLE;
+          state   <= STATE_IDLE;
         end
       endcase
-    end else
-      clk_counter <= clk_counter + 1;
+    end else clk_counter <= clk_counter + 1;
   end
 endmodule

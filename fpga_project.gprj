@@ -7,10 +7,12 @@
     <FileList>
         <File path="src/edge_detector.v" type="file.verilog" enable="1"/>
         <File path="src/edge_detector_tb.v" type="file.verilog" enable="1"/>
+        <File path="src/fifo.v" type="file.verilog" enable="1"/>
         <File path="src/led_pwm.v" type="file.verilog" enable="1"/>
         <File path="src/led_pwm_tb.v" type="file.verilog" enable="1"/>
         <File path="src/main.v" type="file.verilog" enable="1"/>
         <File path="src/posedge_detector.v" type="file.verilog" enable="1"/>
+        <File path="src/uart.v" type="file.verilog" enable="1"/>
         <File path="src/main.cst" type="file.cst" enable="1"/>
     </FileList>
 </Project>
