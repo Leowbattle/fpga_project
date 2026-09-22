@@ -1,4 +1,5 @@
-`timescale 1ns / 1ps;
+`timescale 1ns / 1ps
+;
 
 module uart_tb;
 
@@ -32,8 +33,8 @@ module uart_tb;
   initial begin
     clk = 0;
     forever begin
-       #18 clk = ~clk;
-       #19 clk = ~clk;
+      #18 clk = ~clk;
+      #19 clk = ~clk;
     end
   end
 
