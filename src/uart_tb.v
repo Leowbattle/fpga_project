@@ -52,6 +52,6 @@ module uart_tb;
 
     rst = 0;
 
-    #100000 $finish;
+    #200000 $finish;
   end
 endmodule

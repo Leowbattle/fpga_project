@@ -62,7 +62,7 @@ module uart #(
       state <= STATE_START;
     end
 
-    if (clk_counter >= DIVIDER) begin
+    if (clk_counter > DIVIDER) begin
       clk_counter <= 0;
 
       case (state)
