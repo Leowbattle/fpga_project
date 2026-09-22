@@ -1,5 +1,4 @@
-`timescale 1ns / 1ps
-;
+`timescale 1ns / 1ps;
 
 module uart_tb;
 
@@ -12,7 +11,7 @@ module uart_tb;
   wire [7:0] rx_byte;
 
   uart #(
-      .CLK(100_000_000),
+      .CLK(27_000_000),
       .UART_BAUD(115200),
       .OVERSAMPLE(1),
       .FIFO_SIZE(32)
@@ -22,17 +21,20 @@ module uart_tb;
       .uart_rx(uart_rx),
       .uart_tx(uart_tx),
       .tx_enable(1'b1),
-      .tx_byte(8'd97),
+      .tx_byte(8'd65),
       .tx_count(tx_count),
       .rx_enable(1'b0),
       .rx_byte(rx_byte),
       .rx_count(rx_count)
   );
 
-  // 10 ns clock period
+  // 37 ns clock period
   initial begin
     clk = 0;
-    forever #5 clk = ~clk;
+    forever begin
+       #18 clk = ~clk;
+       #19 clk = ~clk;
+    end
   end
 
   initial begin
@@ -49,15 +51,6 @@ module uart_tb;
 
     rst = 0;
 
-    #10000;
-    #10000;
-    #10000;
-    #10000;
-    #10000;
-    #10000;
-    #10000;
-    #10000;
-    #10000;
-    #10000 $finish;
+    #100000 $finish;
   end
 endmodule

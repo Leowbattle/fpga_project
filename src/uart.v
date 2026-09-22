@@ -59,10 +59,10 @@ module uart #(
 
   always @(posedge clk) begin
     case (state)
-      STATE_IDLE: uart_tx <= 1;
+      STATE_IDLE:  uart_tx <= 1;
       STATE_START: uart_tx <= 0;
-      STATE_DATA: uart_tx <= data[7 - data_counter];
-      STATE_STOP: uart_tx <= 1;
+      STATE_DATA:  uart_tx <= data[7-data_counter];
+      STATE_STOP:  uart_tx <= 1;
     endcase
   end
 
@@ -70,9 +70,7 @@ module uart #(
     if (state == STATE_IDLE) begin
       state <= STATE_START;
       clk_counter <= 0;
-    end
-
-    else if (clk_counter >= DIVIDER) begin
+    end else if (clk_counter >= DIVIDER) begin
       clk_counter <= 0;
 
       case (state)
@@ -81,7 +79,7 @@ module uart #(
           // uart_tx <= 0;
           state <= STATE_DATA;
           data_counter <= 0;
-          data <= 8'd97;
+          data <= 8'd65;
         end
         STATE_DATA: begin
           if (data_counter == 7) state <= STATE_STOP;
@@ -91,7 +89,7 @@ module uart #(
         end
         STATE_STOP: begin
           // uart_tx <= 1;
-          state   <= STATE_IDLE;
+          state <= STATE_IDLE;
         end
       endcase
     end else clk_counter <= clk_counter + 1;

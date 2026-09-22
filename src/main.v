@@ -19,9 +19,9 @@ module blink (
   wire [7:0] rx_count;
   wire [7:0] rx_byte;
 
-  wire xxx;
-  assign led0 = ~xxx;
-  assign uart_tx = xxx;
+  // wire xxx;
+  // assign led0 = ~xxx;
+  // assign uart_tx = xxx;
 
   uart #(
       .CLK(27_000_000),
@@ -32,9 +32,9 @@ module blink (
       .clk(clk),
       .rst(rst),
       .uart_rx(uart_rx),
-      .uart_tx(xxx),
+      .uart_tx(uart_tx),
       .tx_enable(1),
-      .tx_byte(8'd97),
+      .tx_byte(8'd65),
       .tx_count(tx_count),
       .rx_enable(0),
       .rx_byte(rx_byte),
