@@ -13,8 +13,6 @@ module blink (
     input  uart_rx,
     output uart_tx
 );
-  reg rst = 0;
-
   wire [7:0] tx_count;
   wire [7:0] rx_count;
   wire [7:0] rx_byte;
@@ -30,7 +28,7 @@ module blink (
       .FIFO_SIZE(32)
   ) stdout (
       .clk(clk),
-      .rst(rst),
+      .rst(key1),
       .uart_rx(uart_rx),
       .uart_tx(uart_tx),
       .tx_enable(1),

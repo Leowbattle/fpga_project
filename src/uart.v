@@ -57,26 +57,38 @@ module uart #(
 
   reg [31:0] clk_counter = 0;
 
+  // always @(posedge clk) begin
+  //   case (state)
+  //     STATE_IDLE:  uart_tx <= 1;
+  //     STATE_START: uart_tx <= 0;
+  //     STATE_DATA:  uart_tx <= data[data_counter];
+  //     STATE_STOP:  uart_tx <= 1;
+  //   endcase
+  // end
+
   always @(posedge clk) begin
     case (state)
-      STATE_IDLE: uart_tx <= 1;
+      STATE_IDLE:  uart_tx <= 1;
       STATE_START: uart_tx <= 0;
-      STATE_DATA: uart_tx <= data[data_counter];
-      STATE_STOP: uart_tx <= 1;
+      STATE_DATA:  uart_tx <= data[data_counter];
+      STATE_STOP:  uart_tx <= 1;
     endcase
-  end
 
-  reg[31:0] restart_counter = 0;
-
-  always @(posedge clk) begin
-    if (state == STATE_IDLE) begin
-      if (restart_counter >= 27_000_000/10) begin
-        state <= STATE_START;
-        restart_counter <= 0;
-      end else restart_counter <= restart_counter + 1;
+    if (rst) begin
+      uart_tx <= 1;
+      rx_byte <= 0;
+      state <= STATE_IDLE;
+      data_counter <= 0;
+      data <= 0;
+      clk_counter <= 0;
+    end
+    else if (state == STATE_IDLE) begin
+      state <= STATE_START;
+      clk_counter <= 0;
     end
 
-    if (clk_counter >= DIVIDER-1) begin
+    else if (clk_counter >= DIVIDER - 1) begin
+      
       clk_counter <= 0;
 
       case (state)
@@ -95,7 +107,7 @@ module uart #(
         end
         STATE_STOP: begin
           // uart_tx <= 1;
-          state   <= STATE_IDLE;
+          state <= STATE_IDLE;
         end
       endcase
     end else clk_counter <= clk_counter + 1;
