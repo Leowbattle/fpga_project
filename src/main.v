@@ -14,29 +14,23 @@ module blink (
     output uart_tx
 );
   wire [7:0] tx_count;
-  wire [7:0] rx_count;
-  wire [7:0] rx_byte;
-
   // wire xxx;
   // assign led0 = ~xxx;
   // assign uart_tx = xxx;
 
-  uart #(
+  assign led0 = 0;
+
+  uart_tx #(
       .CLK(27_000_000),
       .UART_BAUD(115200),
-      .OVERSAMPLE(1),
       .FIFO_SIZE(32)
   ) stdout (
       .clk(clk),
       .rst(key1),
-      .uart_rx(uart_rx),
       .uart_tx(uart_tx),
       .tx_enable(1),
       .tx_byte(8'd65),
-      .tx_count(tx_count),
-      .rx_enable(0),
-      .rx_byte(rx_byte),
-      .rx_count(rx_count)
+      .tx_count(tx_count)
   );
 
 endmodule
