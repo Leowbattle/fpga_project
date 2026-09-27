@@ -9,7 +9,7 @@ module FIFO #(
     input [7:0] push_byte,
 
     input pop_enable,
-    output reg [7:0] pop_byte = 0,
+    output [7:0] pop_byte,
 
     output [$clog2(SIZE + 1) - 1:0] count
 );
@@ -31,10 +31,10 @@ module FIFO #(
     end
 
     if (pop_enable && count > 0) begin
-      pop_byte <= data[ptr_pop];
-      ptr_pop  <= (ptr_pop + 1) % SIZE;
-    end else pop_byte <= 0;
+      ptr_pop <= (ptr_pop + 1) % SIZE;
+    end
   end
 
+  assign pop_byte = data[ptr_pop];
   assign count = ptr_push >= ptr_pop ? ptr_push - ptr_pop : SIZE - (ptr_pop - ptr_push);
 endmodule

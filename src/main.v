@@ -14,11 +14,28 @@ module blink (
     output uart_tx
 );
   wire [7:0] tx_count;
-  // wire xxx;
-  // assign led0 = ~xxx;
-  // assign uart_tx = xxx;
 
-  assign led0 = 0;
+  reg tx_enable;
+
+  localparam ASCII_A  = 8'd65;
+  localparam ASCII_Z  = 8'd90;
+	localparam ASCII_CR = 8'd13;
+  localparam ASCII_LF = 8'd10;
+
+  reg [7:0] char = ASCII_A;
+
+  always @(posedge clk) begin
+    if (key1 && tx_count < 32) begin
+      tx_enable <= 1;
+
+      if (char == ASCII_Z) char <= ASCII_CR;
+      else if (char == ASCII_CR) char <= ASCII_LF;
+			else if (char == ASCII_LF) char <= ASCII_A;
+      else char <= char + 1;
+    end else begin
+      tx_enable = 0;
+    end
+  end
 
   uart_tx #(
       .CLK(27_000_000),
@@ -28,8 +45,8 @@ module blink (
       .clk(clk),
       .rst(key1),
       .uart_tx(uart_tx),
-      .tx_enable(1),
-      .tx_byte(8'd65),
+      .tx_enable(tx_enable),
+      .tx_byte(char),
       .tx_count(tx_count)
   );
 
