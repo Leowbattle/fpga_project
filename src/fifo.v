@@ -9,9 +9,9 @@ module FIFO #(
     input [7:0] push_byte,
 
     input pop_enable,
-    output [7:0] pop_byte,
+    output reg [7:0] pop_byte,
 
-    output [$clog2(SIZE + 1) - 1:0] count
+    output reg [$clog2(SIZE + 1) - 1:0] count = 0
 );
   reg [7:0] data[SIZE - 1:0];
 
@@ -28,13 +28,17 @@ module FIFO #(
       data[ptr_push] <= push_byte;
       ptr_push <= (ptr_push + 1) % SIZE;
       if ((ptr_push + 1) % SIZE == ptr_pop) ptr_pop <= (ptr_pop + 1) % SIZE;
+      
+      // If full, overwrite beginning but don't increase size
+      if (count < SIZE)
+        count <= count + 1;
     end
 
     if (pop_enable && count > 0) begin
       ptr_pop <= (ptr_pop + 1) % SIZE;
+      count <= count - 1;
     end
-  end
 
-  assign pop_byte = data[ptr_pop];
-  assign count = ptr_push >= ptr_pop ? ptr_push - ptr_pop : SIZE - (ptr_pop - ptr_push);
+    pop_byte <= data[ptr_pop];
+  end
 endmodule

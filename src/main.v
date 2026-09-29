@@ -33,7 +33,7 @@ module blink (
 			else if (char == ASCII_LF) char <= ASCII_A;
       else char <= char + 1;
     end else begin
-      tx_enable = 0;
+      tx_enable <= 0;
     end
   end
 

@@ -3,3 +3,5 @@ sim
 impl/
 *.gprj.user
 a.out
+sim_build/
+*.pyc
