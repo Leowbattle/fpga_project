@@ -15,36 +15,26 @@ module main (
 );
   wire busy;
   assign led0 = ~busy;
-	assign led1 = 1'b1;
-	assign led2 = 1'b1;
-	assign led3 = 1'b1;
-	assign led4 = 1'b1;
-	assign led5 = uart_tx;
+  assign led1 = uart_rx;
+  assign led2 = 1'b1;
+  assign led3 = 1'b1;
+  assign led4 = 1'b1;
+  assign led5 = uart_tx;
 
   wire tx_enable;
 
-  localparam ASCII_A  = 8'd33;
-  localparam ASCII_Z  = 8'd126;
-  localparam ASCII_CR = 8'd13;
-  localparam ASCII_LF = 8'd10;
+  localparam ASCII_A  = 8'd65;
 
   reg [7:0] char = ASCII_A;
 
-	assign tx_enable = key1;
+  wire rx_ready;
+  wire [7:0] rx_byte;
 
-  always @(posedge clk) begin
-    if (tx_enable && !busy) begin
-      if (char == ASCII_Z) char <= ASCII_CR;
-      else if (char == ASCII_CR) char <= ASCII_LF;
-      else if (char == ASCII_LF) char <= ASCII_A;
-      else char <= char + 1;
-    end
-  end
+  assign tx_enable = rx_ready;
 
   uart_tx #(
       .CLK(27_000_000),
-      .UART_BAUD(115200),
-      .FIFO_SIZE(32)
+      .UART_BAUD(115200)
   ) stdout (
       .clk(clk),
       .rst(key2),
@@ -52,6 +42,17 @@ module main (
       .tx_enable(tx_enable),
       .tx_byte(char),
       .busy(busy)
+  );
+
+  uart_rx #(
+      .CLK(27_000_000),
+      .UART_BAUD(115200)
+  ) stdin (
+    .clk(clk),
+    .rst(rst),
+    .uart_rx(uart_rx),
+    .rx_byte(rx_byte),
+    .rx_ready(rx_ready)
   );
 
 endmodule
