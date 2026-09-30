@@ -23,8 +23,8 @@ module main (
 
   wire tx_enable;
 
-  localparam ASCII_A  = 8'd65;
-  localparam ASCII_Z  = 8'd90;
+  localparam ASCII_A  = 8'd33;
+  localparam ASCII_Z  = 8'd126;
   localparam ASCII_CR = 8'd13;
   localparam ASCII_LF = 8'd10;
 

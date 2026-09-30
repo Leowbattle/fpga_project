@@ -1,7 +1,6 @@
 module uart_tx #(
     parameter CLK = 27_000_000,
-    parameter UART_BAUD = 115200,
-    parameter FIFO_SIZE = 32
+    parameter UART_BAUD = 115200
 ) (
     input clk,
 
@@ -70,4 +69,3 @@ module uart_tx #(
   end
 
 endmodule
-
