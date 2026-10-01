@@ -14,8 +14,8 @@ module main (
     output uart_tx
 );
   wire busy;
-  assign led0 = ~uart_rx;
-  assign led1 = ~uart_tx;
+  assign led0 = uart_rx;
+  assign led1 = uart_tx;
   assign led2 = 1'b1;
   assign led3 = 1'b1;
   assign led4 = 1'b1;
