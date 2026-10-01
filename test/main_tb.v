@@ -64,7 +64,7 @@ module main_tb;
         $time, clk, led0, led1, led2, led3, led4, led5, key1, key2, uart_tx, enable, tx_byte,
         stdin, tx_busy);
 
-    enable = 1;
+    enable  = 1;
     tx_byte = 8'h41;
 
     #23000 tx_byte = 8'h42;
