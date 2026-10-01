@@ -56,17 +56,13 @@ module uart_rx_tb;
     enable = 1;
     tx_byte = 8'h41;
 
-    #23000
-    tx_byte = 8'h42;
+    #23000 tx_byte = 8'h42;
 
-    #23000
-    tx_byte = 8'h43;
+    #23000 tx_byte = 8'h43;
 
-    #23000
-    tx_byte = 8'h44;
+    #23000 tx_byte = 8'h44;
 
-    #23000
-    tx_byte = 8'h45;
+    #23000 tx_byte = 8'h45;
 
     #100000 $finish;
   end

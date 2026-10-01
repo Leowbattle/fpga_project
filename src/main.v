@@ -36,7 +36,7 @@ module main (
       .rst(key2),
       .uart_tx(uart_tx),
       .tx_enable(tx_enable),
-      .tx_byte(rx_byte),
+      .tx_byte(rx_byte + 1),
       .busy(busy)
   );
 
