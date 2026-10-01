@@ -1,4 +1,6 @@
-module rpn_calc (
+module rpn_calc #(
+    parameter STACK_SIZE = 32
+) (
     input clk,
 
     input rst,
@@ -23,16 +25,23 @@ module rpn_calc (
   // Used to indicate error
   localparam ASCII_E = 8'd69;
 
-  // Placeholder for numerical output
-  localparam ASCII_N = 8'd78;
-
   localparam STATE_0 = 0;
   localparam STATE_1 = 1;
   localparam STATE_2 = 2;
 
   reg [1:0] state = STATE_0;
-
   reg [7:0] operator = 0;
+
+  // I would like 32 but the Tang Nano 20k only has 18 bit DSPs
+  localparam WORD_SIZE = 16;
+  reg [WORD_SIZE - 1:0] stack[STACK_SIZE:0];
+  reg [7:0] sp = 0;  // TODO Size pointer correctly, check for stack overflow on push
+
+  // TODO Handle negative numbers correctly
+  // TODO Error on overflow
+
+  // Used to hold number being converted from ASCII
+  reg [WORD_SIZE - 1:0] num = 0;
 
   always @(posedge clk) begin
     if (rst) begin
@@ -41,19 +50,29 @@ module rpn_calc (
       out_ready <= 0;
       state <= STATE_0;
       operator <= 0;
+      sp <= 0;
+      num <= 0;
     end else if (out_ready && out_consumed) begin
       out_ready <= 0;
       out_byte  <= 0;
     end else if (in_available) begin
       if (in_byte == ASCII_LF) begin
-        out_byte <= ASCII_N;
-        out_ready <= 1;
+        if (sp < 1) begin
+          out_byte  <= ASCII_E;
+          out_ready <= 1;
+        end else begin
+          // TODO Handle multi digit numbers
+          out_byte <= stack[sp - 1] + ASCII_0;
+          out_ready <= 1;
+          sp <= sp - 1;
+        end
       end else
         case (state)
           STATE_0: begin
             if (in_byte == ASCII_SPACE) begin  // Nothing
             end else if (in_byte >= ASCII_0 && in_byte <= ASCII_9) begin
               state <= STATE_1;
+              num   <= in_byte - ASCII_0;
             end
             else if (in_byte == ASCII_PLUS || in_byte == ASCII_MINUS || in_byte == ASCII_TIMES) begin
               state <= STATE_2;
@@ -68,8 +87,12 @@ module rpn_calc (
           STATE_1: begin
             if (in_byte == ASCII_SPACE) begin
               state <= STATE_0;
+              stack[sp] <= num;
+              sp <= sp + 1;
+              num <= 0;
             end else if (in_byte >= ASCII_0 && in_byte <= ASCII_9) begin
               // state <= STATE_1;
+              num <= num * 10 + in_byte - ASCII_0;
             end else begin
               out_byte <= ASCII_E;
               out_ready <= 1;
@@ -78,6 +101,30 @@ module rpn_calc (
           end
 
           STATE_2: begin
+            // The stack will probably be synthesised as a dual ported BRAM
+            // so accessing two stack items at the same time is fine
+
+            if (sp < 2) begin
+              out_byte <= ASCII_E;
+              out_ready <= 1;
+              state <= STATE_0;
+              sp <= 0;
+            end else
+              case (operator)
+                ASCII_PLUS: begin
+                  stack[sp-2] <= stack[sp-1] + stack[sp-2];
+                  sp <= sp - 1;
+                end
+                ASCII_MINUS: begin
+                  stack[sp-2] <= stack[sp-2] - stack[sp-1];
+                  sp <= sp - 1;
+                end
+                ASCII_TIMES: begin
+                  stack[sp-2] <= stack[sp-1] * stack[sp-2];
+                  sp <= sp - 1;
+                end
+              endcase
+
             if (in_byte == ASCII_SPACE) begin
               state <= STATE_0;
             end else begin

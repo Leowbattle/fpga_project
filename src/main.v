@@ -44,14 +44,14 @@ module main (
   // This is okay as long as calc is ready for input before rx receives more data
   // For this it will, so we won't bother checking in_consumed
   rpn_calc calc (
-    .clk(clk),
-    .rst(key2),
-    .in_byte(rx_byte),
-    .in_available(rx_ready),
-    .in_consumed(in_consumed),
-    .out_byte(tx_byte),
-    .out_ready(out_ready),
-    .out_consumed(out_consumed)
+      .clk(clk),
+      .rst(key2),
+      .in_byte(rx_byte),
+      .in_available(rx_ready),
+      .in_consumed(in_consumed),
+      .out_byte(tx_byte),
+      .out_ready(out_ready),
+      .out_consumed(out_consumed)
   );
 
   uart_tx #(

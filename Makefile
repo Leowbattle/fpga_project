@@ -13,7 +13,7 @@ program: $(BITSTREAM_PATH)
 	openFPGALoader -b tangnano20k $(BITSTREAM_PATH)
 
 console: program
-	picocom /dev/ttyUSB1 -b 115200 --omap crlf
+	picocom /dev/ttyUSB1 -b 115200 --omap crlf --echo
 
 format:
 	verible-verilog-format --inplace src/*.v test/*.v
