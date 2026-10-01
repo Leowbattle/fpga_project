@@ -14,18 +14,14 @@ module main (
     output uart_tx
 );
   wire busy;
-  assign led0 = ~busy;
-  assign led1 = uart_rx;
+  assign led0 = ~uart_rx;
+  assign led1 = ~uart_tx;
   assign led2 = 1'b1;
   assign led3 = 1'b1;
   assign led4 = 1'b1;
-  assign led5 = uart_tx;
+  assign led5 = 1'b1;
 
   wire tx_enable;
-
-  localparam ASCII_A  = 8'd65;
-
-  reg [7:0] char = ASCII_A;
 
   wire rx_ready;
   wire [7:0] rx_byte;
@@ -40,7 +36,7 @@ module main (
       .rst(key2),
       .uart_tx(uart_tx),
       .tx_enable(tx_enable),
-      .tx_byte(char),
+      .tx_byte(rx_byte),
       .busy(busy)
   );
 
@@ -48,11 +44,11 @@ module main (
       .CLK(27_000_000),
       .UART_BAUD(115200)
   ) stdin (
-    .clk(clk),
-    .rst(rst),
-    .uart_rx(uart_rx),
-    .rx_byte(rx_byte),
-    .rx_ready(rx_ready)
+      .clk(clk),
+      .rst(key2),
+      .uart_rx(uart_rx),
+      .rx_byte(rx_byte),
+      .rx_ready(rx_ready)
   );
 
 endmodule
